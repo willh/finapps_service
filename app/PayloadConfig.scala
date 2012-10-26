@@ -9,7 +9,8 @@ object PayloadConfig {
 
     if (mongoUrl.isEmpty) {
       println("mongoURL is empty: "+mongoUrl)
-      defaultUrl
+      //defaultUrl
+      "mongodb://heroku:d60e26f0adba335cfc4bb6af0820479f@alex.mongohq.com:10050/app8754822"
     }
     else {
       println("mongoURL is not empty: "+mongoUrl)
