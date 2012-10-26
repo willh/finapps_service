@@ -43,10 +43,8 @@ object PayloadController extends Controller {
   }
 
   private def get(token: String): String = {
-    val mongoURI = MongoURI(PayloadConfig.getMongoURL)
-    val mongoConn = MongoConnection(mongoURI)
-    val mongoColl = mongoConn("finapps")("payload")
-    
+    val mongoColl = getCollection
+
     val query = MongoDBObject("token" -> token)
 
     mongoColl.findOne(query).map { dbObj =>
@@ -55,15 +53,28 @@ object PayloadController extends Controller {
   }
 
   private def store(token: String, payload: String) {
-    val mongoURI = MongoURI(PayloadConfig.getMongoURL)
-    val mongoConn = MongoConnection(mongoURI)
-    val mongoColl = mongoConn("finapps")("payload")
+    val mongoColl = getCollection
 
     val newData = MongoDBObject(
       "token"-> token,
       "data" -> payload
     )
     mongoColl += newData
+  }
+
+  private def getCollection = {
+    val url = PayloadConfig.getMongoURL
+    val mongoConn = url match {
+      case None => MongoConnection()
+      case _ => {
+        val mongoUri = MongoURI(url.get)
+        val conn = MongoConnection(mongoUri)
+        val db = conn.getDB("finapps")
+        db.authenticate(mongoUri.username, new String(mongoUri.password))
+        conn
+      }
+    }
+    mongoConn("finapps")("payload")
   }
 
 }
