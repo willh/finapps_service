@@ -7,9 +7,13 @@ object PayloadConfig {
   def getMongoURL = {
     val mongoUrl = System.getenv("MONGOHQ_URL")
 
-    if (mongoUrl.isEmpty)
+    if (mongoUrl.isEmpty) {
+      println("mongoURL is empty: "+mongoUrl)
       defaultUrl
-    else
+    }
+    else {
+      println("mongoURL is not empty: "+mongoUrl)
       mongoUrl
+    }
   }
 }
