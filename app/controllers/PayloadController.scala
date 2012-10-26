@@ -9,7 +9,7 @@ import AppConfig.PayloadConfig
 object PayloadController extends Controller {
 
   def test = Action {
-    Ok(System.getenv("MONGOHQ_URL"))
+    Ok("Hello services")
   }
 
   def storePayload = Action {
