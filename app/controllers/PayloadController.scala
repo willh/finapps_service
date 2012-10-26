@@ -64,17 +64,19 @@ object PayloadController extends Controller {
 
   private def getCollection = {
     val url = PayloadConfig.getMongoURL
-    val mongoConn = url match {
-      case None => MongoConnection()
+    url match {
+      case None => {
+        val conn = MongoConnection()
+        conn("finapps")("payload")
+      }
       case _ => {
         val mongoUri = MongoURI(url.get)
         val conn = MongoConnection(mongoUri)
-        val db = conn.getDB("finapps")
+        val db = conn.getDB("app8754822")
         db.authenticate(mongoUri.username, new String(mongoUri.password))
-        conn
+        conn("app8754822")("payload")
       }
     }
-    mongoConn("finapps")("payload")
   }
 
 }
