@@ -5,6 +5,8 @@ import libs.json.Json
 import play.api.mvc._
 import com.mongodb.casbah.Imports._
 import AppConfig.PayloadConfig
+import java.net.URI
+import com.mongodb.casbah.MongoURI
 
 object PayloadController extends Controller {
 
@@ -41,8 +43,10 @@ object PayloadController extends Controller {
   }
 
   private def get(token: String): String = {
-    val mongoConn = MongoConnection(PayloadConfig.getMongoURL)
+    val mongoURI = MongoURI(PayloadConfig.getMongoURL)
+    val mongoConn = MongoConnection(mongoURI)
     val mongoColl = mongoConn("finapps")("payload")
+    
     val query = MongoDBObject("token" -> token)
 
     mongoColl.findOne(query).map { dbObj =>
@@ -51,7 +55,8 @@ object PayloadController extends Controller {
   }
 
   private def store(token: String, payload: String) {
-    val mongoConn = MongoConnection(PayloadConfig.getMongoURL)
+    val mongoURI = MongoURI(PayloadConfig.getMongoURL)
+    val mongoConn = MongoConnection(mongoURI)
     val mongoColl = mongoConn("finapps")("payload")
 
     val newData = MongoDBObject(
