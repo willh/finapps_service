@@ -51,7 +51,7 @@ object PayloadController extends Controller {
   }
 
   private def store(token: String, payload: String) {
-    val mongoConn = MongoConnection()
+    val mongoConn = MongoConnection(PayloadConfig.getMongoURL)
     val mongoColl = mongoConn("finapps")("payload")
 
     val newData = MongoDBObject(
