@@ -8,12 +8,16 @@ object PayloadStorage {
   def get(token: String): String = {
     val mongoColl = getCollection
 
-    val query = MongoDBObject("token" -> token)
+    //val query = MongoDBObject("token" -> token)
+    // return latest payload until twilio token-corrupting issue sorted
+    val sortQuery = MongoDBObject("_id" -> -1)
 
-    mongoColl.findOne(query).map {
+    val results = mongoColl.find().sort(sortQuery).map {
       dbObj =>
         dbObj.getAsOrElse[String]("data", "NO_DATA")
-    }.getOrElse("NO_PAYLOAD")
+    }
+    val result = results.take(1)
+    result.toList.head
   }
 
   def store(token: String, payload: String) {
@@ -23,7 +27,7 @@ object PayloadStorage {
       "token" -> token,
       "data" -> payload
     )
-    mongoColl += newData
+    mongoColl.insert(newData, WriteConcern.Safe)
   }
 
   private def getCollection = {

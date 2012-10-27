@@ -44,7 +44,11 @@ object PayloadController extends Controller {
       request.body.asFormUrlEncoded.map {
         body =>
           val token = body.get("token").get.head
-          val responseMap = Map("data" -> Json.parse(PayloadStorage.get(token)))
+          val payload = PayloadStorage.get(token)
+          val responseMap = payload match {
+            case "NO_PAYLOAD" => Map("data" -> Json.parse("{\"error\": \"NO_TOKEN_MATCH\"}"))
+            case _ => Map("data" -> Json.parse(payload))
+          }
           Ok(Json.toJson(responseMap)).as("application/json").withHeaders(
             "Access-Control-Allow-Origin" -> "*",
             "Access-Control-Allow-Methods" -> "GET, POST, PUT, DELETE, OPTIONS",
