@@ -8,3 +8,4 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /payload/test               controllers.PayloadController.test
 POST    /payload/store              controllers.PayloadController.storePayload
 GET     /payload/:token             controllers.PayloadController.getPayload(token: Option[String])
+GET     /payload/store              controllers.Application.options
